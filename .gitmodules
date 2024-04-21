@@ -1,0 +1,4 @@
+
+[submodule "pytrade2"]
+	path = pytrade2
+	url = https://github.com/DmitryPukhov/pytrade2.git

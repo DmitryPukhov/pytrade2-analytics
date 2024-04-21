@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  mlflow:
+    container_name: pytrade2-mlflow
+    hostname: pytrade2-mlflow
+    image: ghcr.io/mlflow/mlflow
+    ports:
+      - "5000:5000"
+    command: >
+      mlflow server  --serve-artifacts --host 0.0.0.0
+
+    # To save runs and models between docker compose up/down
+    volumes:
+      - ./mlartifacts:/mlartifacts
+      - ./mlruns:/mlruns
