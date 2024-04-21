@@ -8,9 +8,8 @@ services:
     ports:
       - "5000:5000"
     command: >
-      mlflow server  --serve-artifacts --host 0.0.0.0
+      mlflow server --serve-artifacts --host 0.0.0.0
 
-    # To save runs and models between docker compose up/down
     volumes:
-      - ./mlartifacts:/mlartifacts
-      - ./mlruns:/mlruns
+      - ./../mlartifacts:/mlartifacts
+      - ./../mlruns:/mlruns
