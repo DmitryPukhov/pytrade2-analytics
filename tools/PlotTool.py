@@ -52,3 +52,26 @@ class PlotTool:
         PlotTool.plot_value_counts(ax2, df, 'signal', grouped = True, name=name)
         fig.suptitle(f'{name} signal counts from {df.index.min()} to {df.index.max()}')
         plt.show()
+
+    @staticmethod
+    def plot_buy_sell(profit_df):
+        profit_cnt = len(profit_df[(profit_df['signal'] != 0) & (profit_df['profit'] > 0)])
+        loss_cnt = len(profit_df[profit_df['profit'] < 0])
+        buy_profit_cnt = len(profit_df[(profit_df['signal']== 1) & (profit_df['profit'] >= 0)])
+        buy_loss_cnt = len(profit_df[(profit_df['signal']== 1) & (profit_df['profit'] < 0)])
+        sell_profit_cnt = len(profit_df[(profit_df['signal']== -1) & (profit_df['profit'] >= 0)])
+        sell_loss_cnt = len(profit_df[(profit_df['signal']== -1) & (profit_df['profit'] < 0)])
+        #
+        # all_data = {'profit': profit_cnt, 'loss': loss_cnt}
+        # buy_data = {'profit': buy_profit_cnt, 'loss': buy_loss_cnt}
+        # sell_data = {'profit': sell_profit_cnt, 'loss': sell_loss_cnt}
+
+        fig, (ax_all, ax_buy, ax_sell) = plt.subplots(1,3)
+        ax_all.pie([profit_cnt, loss_cnt], labels=['profit','loss'], autopct= lambda x: '{:.0f}'.format(x/100*(profit_cnt+loss_cnt)))
+        ax_all.set_title('all')
+        ax_buy.pie([buy_profit_cnt, buy_loss_cnt], labels=['profit','loss'], autopct= lambda x: '{:.0f}'.format(x/100*(buy_profit_cnt+buy_loss_cnt)))
+        ax_buy.set_title('buy')
+        ax_sell.pie([sell_profit_cnt, sell_loss_cnt], labels=['profit','loss'], autopct= lambda x: '{:.0f}'.format(x/100*(sell_profit_cnt+sell_loss_cnt)))
+        ax_sell.set_title('sell')
+        fig.suptitle('buy/sell counts')
+        plt.show()
