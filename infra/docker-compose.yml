@@ -5,11 +5,13 @@ services:
     container_name: pytrade2-mlflow
     hostname: pytrade2-mlflow
     image: ghcr.io/mlflow/mlflow
+    env_file:
+      - ../.env
     ports:
       - "5000:5000"
     command: >
-      mlflow server --serve-artifacts --host 0.0.0.0
+      sh -c "pip install boto3 &&
+      mlflow server --host 0.0.0.0 --default-artifact-root s3://pytrade2/mlartifacts --artifacts-destination s3://pytrade2/mlartifacts"
 
     volumes:
-      - ./../mlartifacts:/mlartifacts
-      - ./../mlruns:/mlruns
+      - ./mlruns:/mlruns
