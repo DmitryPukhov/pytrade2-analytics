@@ -54,7 +54,7 @@ class PlotTool:
         plt.show()
 
     @staticmethod
-    def plot_buy_sell(profit_df):
+    def plot_buy_sell(profit_df, name = ''):
         profit_cnt = len(profit_df[(profit_df['signal'] != 0) & (profit_df['profit'] > 0)])
         loss_cnt = len(profit_df[profit_df['profit'] < 0])
         buy_profit_cnt = len(profit_df[(profit_df['signal']== 1) & (profit_df['profit'] >= 0)])
@@ -73,5 +73,5 @@ class PlotTool:
         ax_buy.set_title('buy')
         ax_sell.pie([sell_profit_cnt, sell_loss_cnt], labels=['profit','loss'], autopct= lambda x: '{:.0f}'.format(x/100*(sell_profit_cnt+sell_loss_cnt)))
         ax_sell.set_title('sell')
-        fig.suptitle('buy/sell counts')
+        fig.suptitle(f'{name} buy/sell counts')
         plt.show()
