@@ -8,16 +8,24 @@ import plotly as py
 from plotly import graph_objects as go
 import numpy as np
 from plotly import graph_objects as go
+import plotly as py
+import plotly.express as px
+from plotly import graph_objects as go
+# Remove plotly warnings
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import matplotlib.pyplot as plt
+
 
 class PlotTool:
 
     @staticmethod
-    def plot_candles(df: pd.DataFrame, period: str)->pd.DataFrame:
+    def plot_candles(df: pd.DataFrame, period: str, ticker: str = None)->pd.DataFrame:
         """
         Candles chart resampled to period
         """
-        ticker = df.iloc[0]["ticker"]
+        if not ticker:
+            ticker = df.iloc[0]["ticker"]
         df=df.resample(period).agg({"open": "first", "high": "max", "low": "min", "close": "last", "open_time": "first", "close_time": "last"})
         fig = go.Figure(data=[ \
             go.Candlestick( \
@@ -75,3 +83,31 @@ class PlotTool:
         ax_sell.set_title('sell')
         fig.suptitle(f'{name} buy/sell counts')
         plt.show()
+
+    @staticmethod
+    def plot_drawdown(signal_ext):
+        drawdown = max(signal_ext['drawdown'])
+        profit = sum(signal_ext['profit'])
+        ratio = round(profit/drawdown, 2)
+        title = f'Drawdown. sum(profit)/max(drawdown) = {ratio}'
+        px.line(signal_ext.loc[signal_ext['signal']!=0, ['drawdown', 'profit']], title = title).update_traces(mode='lines+markers').show()
+
+    @staticmethod
+    def barplot_profit(signal_ext):
+        profit_df = signal_ext.loc[signal_ext['profit']!=0, 'profit']
+        mean = profit_df.mean()
+        median = profit_df.median()
+
+        plt.bar(x=["mean", "median"], height=[mean, median])
+        plt.title('Profit per trade');
+        plt.show()
+
+    @staticmethod
+    def plot_profit(signal_ext: pd.DataFrame):
+        # Profit cumsumplot
+        px.line(signal_ext.loc[signal_ext['signal']!=0, 'profit'], title = 'Profit').update_traces(mode='lines+markers').show()
+
+    @staticmethod
+    def plot_profit_cumsum(signal_ext: pd.DataFrame):
+        # Profit cumsumplot
+        px.line(signal_ext.loc[signal_ext['signal']!=0, 'profit'].cumsum(), title = 'Profit cumsum').update_traces(mode='lines+markers').show()
