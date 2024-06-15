@@ -98,7 +98,11 @@ class PlotTool:
         mean = profit_df.mean()
         median = profit_df.median()
 
-        plt.bar(x=["mean", "median"], height=[mean, median])
+        bars = plt.bar(x=["mean", "median"], height=[mean, median])
+        for bar in bars:
+            yval = round(bar.get_height(), 2)
+            plt.text(bar.get_x(), yval + .005, yval)
+
         plt.title('Profit per trade');
         plt.show()
 
