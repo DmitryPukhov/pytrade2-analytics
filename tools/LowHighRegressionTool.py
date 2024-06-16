@@ -116,10 +116,8 @@ class LowHighRegressionTool:
     @staticmethod
     def create_model_lgb(lgb_params):
         """ MultiOutputRegressor with lgb model. """
-
         lgb_model = lgb.LGBMRegressor(**lgb_params)
         model = MultiOutputRegressor(lgb_model)
-        print(f'Created new model {model}')
         return model
 
     @staticmethod
