@@ -6,8 +6,8 @@ from sklearn.preprocessing import StandardScaler, RobustScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, MaxAbsScaler
 from sklearn.compose import ColumnTransformer, make_column_selector
-from pytrade2.pytrade2.strategy.features.LowHighTargets import LowHighTargets
-from pytrade2.pytrade2.strategy.features.MultiIndiFeatures import MultiIndiFeatures
+from pytrade2.pytrade2.features.LowHighTargets import LowHighTargets
+from pytrade2.pytrade2.features.MultiIndiFeatures import MultiIndiFeatures
 
 
 class DataTool:

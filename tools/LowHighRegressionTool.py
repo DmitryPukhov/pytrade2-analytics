@@ -1,7 +1,7 @@
 import pandas as pd
 
-from pytrade2.pytrade2.strategy.features.LowHighTargets import LowHighTargets
-from pytrade2.pytrade2.strategy.features.MultiIndiFeatures import MultiIndiFeatures
+from pytrade2.pytrade2.features.LowHighTargets import LowHighTargets
+from pytrade2.pytrade2.features.MultiIndiFeatures import MultiIndiFeatures
 from pytrade2.pytrade2.strategy.signal.SignalByFutLowHigh import SignalByFutLowHigh
 import lightgbm as lgb
 from sklearn.multioutput import MultiOutputRegressor
