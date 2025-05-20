@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+import pathlib
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, RobustScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
@@ -11,7 +12,7 @@ from pytrade2.pytrade2.features.MultiIndiFeatures import MultiIndiFeatures
 
 
 class DataTool:
-
+   
     @staticmethod
     def read_last_candles(ticker, data_dir, days=1):
         """ Read 1min candles from data_dir for given days """
@@ -21,20 +22,35 @@ class DataTool:
         data = pd.concat([pd.read_csv(f, parse_dates=["open_time", "close_time"]) for f in file_paths])
         data.set_index("close_time", drop=False, inplace=True)
         return data
-
+        
+    @staticmethod    
+    def rolling_ohlc(candles_1min, window):
+        """ Unlike resample, rolling window does not work with first, last aggregations and with datetime there.
+            Some hacks needed """
+        df = candles_1min.copy()
+        # Convert datetime to numeric because rolling window does not work with times for getting first in aggregation
+        df['open_time'] = pd.to_datetime(df['open_time']).astype('int64')
+        df['close_time'] = pd.to_datetime(df['close_time']).astype('int64')
+        # Aggregate
+        df = df.rolling(window, closed = 'both').agg({
+                'open_time': 'min',
+                'close_time': 'max',      # Equivalent to 'last' for time
+                'open': lambda x: x.iloc[0],    # First value
+                'high': 'max',
+                'low': 'min',
+                'close': lambda x: x.iloc[-1],   # Last value
+                'vol': 'sum'})    
+        df['open_time'] = pd.to_datetime(df['open_time'], unit = 'ns') 
+        df['close_time'] = pd.to_datetime(df['close_time'], unit = 'ns')
+    
+        return df    
+     
     @staticmethod
     def candles_by_periods_of(candles_1min: pd.DataFrame, periods: list[str]) -> dict[str, pd.DataFrame]:
         """ Create candles_by_periods """
         out = {}
         for period in periods:
-            out[period] = candles_1min.resample(period).agg({'open_time': 'first',
-                                                             'close_time': 'last',
-                                                             'open': 'first',
-                                                             'high': 'max',
-                                                             'low': 'min',
-                                                             'close': 'last',
-                                                             'vol': 'max'
-                                                             })
+            out[period] = DataTool.rolling_ohlc(candles_1min, period)
         return out
 
     @staticmethod

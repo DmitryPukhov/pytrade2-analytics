@@ -3,7 +3,7 @@ mlruns
 mlartifacts
 .idea
 *.iml
-/data/*Strategy
+**/data/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
